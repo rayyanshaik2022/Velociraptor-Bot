@@ -1,0 +1,13 @@
+{
+    "439916795554430986": {
+        "verification-channel": "verification",
+        "verification-role": "Non-Recursive",
+        "default-role": "Unverified"
+    },
+    "609228963566321664": {
+        "verification-channel": null,
+        "verification-role": null,
+        "default-role": null,
+        "server-name": null
+    }
+}
