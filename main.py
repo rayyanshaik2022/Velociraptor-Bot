@@ -157,20 +157,20 @@ async def zoom(ctx, classroom: str):
     if ctx.guild.id == 439916795554430986:
 
         classes = [
-            [['bio-HL','biology-HL'], "https://us02web.zoom.us/j/4997744484"],
-            [['econ-HL', 'economics-HL'], 'https://us02web.zoom.us/j/9226306279'],
-            [['spanish'], 'https://us02web.zoom.us/j/84412185302'],
-            [['english-HL', 'eng-HL'], 'https://us02web.zoom.us/j/8751335452'],
-            [['comp-sci-HL', 'compsci-HL','computer-science-hl','cs','cs-HL'], 'https://us02web.zoom.us/j/960552633'],
-            [['physics-HL'], ' https://us02web.zoom.us/j/5494545966'],
-            [['math-SL'], 'https://us02web.zoom.us/j/8162568287'],
-            [['math-HL'], 'https://us02web.zoom.us/j/2793425169'],
-            [['english-SL', 'eng-SL'], 'https://us02web.zoom.us/j/7597378476'],
-            [['ToK', 'ToK-HL', 'theory-of-knowledge', 'theoryofknowledge', 'bushong'], 'https://us02web.zoom.us/j/9226306279'],
-            [['bus-management', 'buisiness management'], 'https://us02web.zoom.us/j/3509091406'],
-            [['anatomy', 'anatomy and physiology'], 'https://us02web.zoom.us/j/4997744484'],
+            [['bio-HL','biology-HL'], "https://us02web.zoom.us/j/"],
+            [['econ-HL', 'economics-HL'], 'https://us02web.zoom.us/j/'],
+            [['spanish'], 'https://us02web.zoom.us/j/'],
+            [['english-HL', 'eng-HL'], 'https://us02web.zoom.us/j/'],
+            [['comp-sci-HL', 'compsci-HL','computer-science-hl','cs','cs-HL'], 'https://us02web.zoom.us/j/'],
+            [['physics-HL'], ' https://us02web.zoom.us/j/'],
+            [['math-SL'], 'https://us02web.zoom.us/j/'],
+            [['math-HL'], 'https://us02web.zoom.us/j/'],
+            [['english-SL', 'eng-SL'], 'https://us02web.zoom.us/j/'],
+            [['ToK', 'ToK-HL', 'theory-of-knowledge', 'theoryofknowledge', 'bushong'], 'https://us02web.zoom.us/j/'],
+            [['bus-management', 'buisiness management'], 'https://us02web.zoom.us/j/'],
+            [['anatomy', 'anatomy and physiology'], 'https://us02web.zoom.us/j/'],
             [['latin', 'latin-SL'], 'https://us02web.zoom.us/j/4406445896'],
-            [['theater', 'theatre', 'theater-HL'], 'https://us02web.zoom.us/j/6815879560']
+            [['theater', 'theatre', 'theater-HL'], 'https://us02web.zoom.us/j/']
             ]
 
         for c in classes:
