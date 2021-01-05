@@ -18,7 +18,8 @@ class HelpCog(commands.Cog):
                 "```",
                 "-zoom (class)",
                 "-bookmark (message)",
-                "-schedule"
+                "-schedule",
+                "-calendar help"
                 "```"
             ]
 
@@ -37,7 +38,7 @@ class HelpCog(commands.Cog):
                 "-verify default_role (@role)",
                 "-verify new_role (@role)",
                 "-verify accept (@user)",
-                "-verify deny (@user)"
+                "-verify deny (@user)",
                 "```"
             ]
         

@@ -4,6 +4,7 @@ import os
 import time
 from datetime import date
 import copy
+import wikipedia
 
 import discord
 import discord.ext.commands as commands
@@ -13,6 +14,7 @@ from constants import *
 from cogs.verification import VerificationCog
 from cogs.help import HelpCog
 from cogs.songs import SongsCog
+from cogs.calendar import CalendarCog
 
 from collections import Counter
 from difflib import SequenceMatcher
@@ -23,6 +25,9 @@ client.remove_command("help")
 
 class local:
     SERVER_DATA = {}
+    CALENDAR_DATA = {}
+    last_india = time.time()
+    
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
 
@@ -38,11 +43,15 @@ async def save_data():
         with open('server_data.json', 'w') as f:
             json.dump(local.SERVER_DATA, f, indent=4)
             print('[=] Server-data json successfully updated')
+        
+        with open('calendar_data.json', 'w') as f:
+            json.dump(local.CALENDAR_DATA, f, indent=4)
+            print('[=] Calendar-data json successfully updated')
 
 async def change_status():
 
     while True:
-        minutes = 1
+        minutes = 0.1
         await asyncio.sleep(60*minutes)
         velo = client.get_guild(id=439916795554430986)
         bots = ['VelociraptorBot','TacoShack','Octave','Rythm']
@@ -57,6 +66,7 @@ async def change_status():
                     games.append(g)
             except:
                 talkers += 1
+
 
         if len(games) > 0:
             mode = max(set(games), key=games.count)
@@ -87,10 +97,32 @@ async def on_ready():
             json.dump({}, f)
             print('[+] New Server-data file')
 
+    if os.path.exists("calendar_data.json"):
+        with open('calendar_data.json', 'r') as f:
+
+            local.CALENDAR_DATA = json.load(f)
+            # Merges player data with 'default data' to account for new keys
+            print("[=] Calendar-data file properly loaded")
+    else:
+        with open('calendar_data.json', 'w') as f:
+            calendar = {
+                "Monday" : [],
+                "Tuesday" : [],
+                "Wednesday" : [],
+                "Thursday" : [],
+                "Friday" : [],
+                "Saturday" : [],
+                "Sunday" : []
+            }
+            json.dump(calendar, f)
+            local.CALENDAR_DATA = calendar
+            print('[+] New Calendar-data file')
+
     # Add cogs here
     client.add_cog(VerificationCog(client, local.SERVER_DATA))
     client.add_cog(HelpCog(client))
     client.add_cog(SongsCog(client))
+    client.add_cog(CalendarCog(client, local.CALENDAR_DATA))
 
 @client.event
 async def on_guild_join(guild):
@@ -123,29 +155,21 @@ async def on_member_join(member):
         print(f"{member.guild.name} has not set up a verification role")
 
 @client.command(pass_context=True)
-async def test(ctx):
-    velo = client.get_guild(id=439916795554430986)
-    bots = ['VelociraptorBot','TacoShack','Octave','Rythm']
-    counter = [m for m in velo.members if m.status in [discord.Status.online, discord.Status.do_not_disturb] and m.name not in bots]
-
-    games = []
-    talkers = 0
-    for i in counter:
-        try:
-            g = i.activity.name
-            if g.lower() != g and g != None:
-                games.append(g)
-        except:
-            talkers += 1
-
-    if len(games) > 0:
-        mode = max(set(games), key=games.count)
-        activity = discord.Game(name=mode)
-    else:
-        mode = None
-        activity = discord.Game(name=f"")
-    
-    await client.change_presence(status=discord.Status.online, activity=activity)
+async def test(ctx, guild=""):
+    if ctx.author.id == 181125845358870528:
+        guilds = client.guilds
+        
+        await ctx.send("Active Servers:")
+        for g in [x.name for x in guilds]:
+            await ctx.send(g)
+        
+        server = None
+        for g in guilds:
+            if g.name == guild:
+                await ctx.send("Found!")
+                await ctx.send(f"Members: {len(g.members)}")
+                for m in g.members:
+                    await ctx.send(m.name)
     
     
 
@@ -159,9 +183,10 @@ async def zoom(ctx, classroom: str):
         classes = [
             [['bio-HL','biology-HL'], "https://us02web.zoom.us/j/4997744484"],
             [['econ-HL', 'economics-HL'], 'https://us02web.zoom.us/j/9226306279'],
-            [['spanish'], 'https://us02web.zoom.us/j/84412185302'],
+            [['spanish-period-7', 'spanish-7'], 'https://us02web.zoom.us/j/84412185302'],
+            [['spanish-period-1', 'spanish-1'], 'https://us02web.zoom.us/j/85059830609'],
             [['english-HL', 'eng-HL'], 'https://us02web.zoom.us/j/8751335452'],
-            [['comp-sci-HL', 'compsci-HL','computer-science-hl','cs','cs-HL'], 'https://us02web.zoom.us/j/960552633'],
+            [['comp-sci-HL', 'compsci-HL','computer-science-hl','cs','cs-HL','computer science'], 'https://us02web.zoom.us/j/960552633'],
             [['physics-HL'], ' https://us02web.zoom.us/j/5494545966'],
             [['math-SL'], 'https://us02web.zoom.us/j/8162568287'],
             [['math-HL'], 'https://us02web.zoom.us/j/2793425169'],
@@ -170,13 +195,15 @@ async def zoom(ctx, classroom: str):
             [['bus-management', 'buisiness management'], 'https://us02web.zoom.us/j/3509091406'],
             [['anatomy', 'anatomy and physiology'], 'https://us02web.zoom.us/j/4997744484'],
             [['latin', 'latin-SL'], 'https://us02web.zoom.us/j/4406445896'],
-            [['theater', 'theatre', 'theater-HL'], 'https://us02web.zoom.us/j/6815879560']
+            [['theater', 'theatre', 'theater-HL'], 'https://us02web.zoom.us/j/6815879560'],
+            [['french','France',],'https://us02web.zoom.us/j/881897247'],
+            [['psychology','Psych-Hl'],'https://us02web.zoom.us/j/3111513092']            
             ]
 
         for c in classes:
             aliases, link = c
             for alias in aliases:
-                if similar(classroom, alias) > 0.7:
+                if similar(classroom.lower(), alias.lower()) > 0.7:
                     await ctx.send(f"**{aliases[0].title()}**: {link}")
                     break
     else:
@@ -194,15 +221,23 @@ async def bookmark(ctx,*, message=None):
     await ctx.message.delete()
 
 @client.command(pass_context=True)
-async def schedule(ctx):
-    
-    f = discord.File('./images/schedule.png')
-    await ctx.send(file=f)
+async def schedule(ctx, new_file : str = None):
+
+    if new_file:
+        local.SERVER_DATA[str(ctx.guild.id)]['schedule_file'] = new_file
+        await ctx.send(f"Default file changed to: **./images/{new_file}**")
+    else:
+        if 'schedule_file' in local.SERVER_DATA[str(ctx.guild.id)].keys():
+            await ctx.send(file=discord.File(f"./images/{local.SERVER_DATA[str(ctx.guild.id)]['schedule_file']}"))
+        else:
+            await ctx.send(file=discord.File('./images/schedule.png'))
 
 @client.command(pass_context=True)
 @commands.has_permissions(administrator=True)
 async def clear(ctx, amount, name: discord.User = "None"):
-    if (ctx.author.id != None):
+    print(ctx.author.id)
+    print(ctx.guild.owner.id)
+    if (ctx.author.id != None and ctx.author.id == ctx.guild.owner.id):
         start = time.time()
         if name == "None":
 
@@ -238,13 +273,16 @@ async def clear(ctx, amount, name: discord.User = "None"):
 @client.event
 async def on_message(message):
 
+    if message.author.id is client.user.id:
+        return    
+
     '''
     if message.channel.name == local.SERVER_DATA[str(message.guild.id)]["verification-channel"]:
         if message.author.id != client.user.id:
             if 'verify' not in message.content.lower():
                 await message.delete()
     '''
-    
+
     await client.process_commands(message)
 
 client.run(TOKEN, bot=True)

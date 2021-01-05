@@ -107,9 +107,8 @@ class VerificationCog(commands.Cog):
     @verify.command(pass_context=True)
     @commands.has_permissions(administrator=True)
     async def deny(self, ctx, user: discord.User):
-        
         member = ctx.guild.get_member(user.id)
-        await member.send("Your verification request was denied.")
+        await member.send(content="Your verification request was denied.")
         await ctx.guild.kick(member)
 
 
